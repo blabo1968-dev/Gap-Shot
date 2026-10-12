@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8"><!DOCTYPE html>
-<html lang="de">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Gap Shot - Neon Arcade</title>
@@ -38,7 +35,11 @@
             </div>
             <div id="effect-status" class="text-[9px] text-violet-300 h-3 mt-1 font-semibold"></div>
         </div>
-        <div class="text-center"><div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Level</div><div id="level-display" class="text-lg sm:text-xl font-orbitron font-bold text-amber-400">1</div></div>
+        <div class="text-center">
+            <div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Level</div>
+            <div id="level-display" class="text-lg sm:text-xl font-orbitron font-bold text-amber-400">1</div>
+            <div id="combo-display" class="text-[10px] text-emerald-400 font-bold h-3"></div>
+        </div>
         <div class="text-right"><div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Score</div><div id="current-score" class="text-xl sm:text-2xl font-orbitron font-black text-white neon-text-cyan">0</div></div>
     </div>
 
@@ -50,32 +51,47 @@
     <div class="relative w-full flex-1 flex items-center justify-center my-1 overflow-hidden rounded-2xl bg-slate-950/90 border border-slate-800/80">
         <canvas id="gameCanvas" class="w-full h-full block"></canvas>
         <div id="special-message" class="absolute top-[18%] left-1/2 -translate-x-1/2 z-10 text-sm font-bold text-center pointer-events-none opacity-0 transition-opacity duration-200 whitespace-nowrap"></div>
-        <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-sm p-6 text-center transition-all duration-300 z-20">
-            <h1 id="overlay-title" class="text-4xl font-orbitron font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 mb-2 neon-text-cyan">GAP SHOT</h1>
-            <p id="overlay-subtitle" class="text-slate-300 text-sm max-w-xs mb-4 leading-relaxed">Tippe, um den Ball nach oben zu schießen. Treffe die Lücken beider Schranken!</p>
-            <div class="mb-5 px-3 py-1 bg-cyan-950/60 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300 tracking-wide flex items-center gap-1.5"><span>❤️ 3 Leben inklusive!</span></div>
-            <button id="start-btn" class="w-full max-w-xs py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-orbitron font-bold text-lg text-slate-950 shadow-lg shadow-cyan-500/30 hover:brightness-110 active:scale-95 transition-all mb-3">SPIEL STARTEN</button>
-            <div class="flex gap-2 w-full max-w-xs mt-1">
-                <button id="open-rules-btn" class="flex-1 py-2 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">📖 Spielregeln</button>
-                <button id="open-impressum-btn" class="flex-1 py-2 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">⚖️ Impressum</button>
+        
+        <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-sm p-5 text-center transition-all duration-300 z-20">
+            <h1 id="overlay-title" class="text-3xl font-orbitron font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 mb-1 neon-text-cyan">GAP SHOT</h1>
+            <p id="overlay-subtitle" class="text-slate-300 text-xs max-w-xs mb-3 leading-relaxed">Tippe, um den Ball nach oben zu schießen. Treffe die Lücken beider Schranken!</p>
+            
+            <div id="game-over-stats" class="hidden mb-3 w-full bg-slate-900/90 border border-cyan-500/30 rounded-xl p-3 text-xs space-y-1.5 shadow-lg">
+                <div id="record-msg" class="font-bold text-amber-400 text-sm font-orbitron"></div>
+                <div id="score-msg" class="text-slate-200"></div>
+                <div id="stats-msg" class="text-[11px] text-slate-400"></div>
+            </div>
+
+            <div class="mb-3 px-3 py-1 bg-cyan-950/60 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300 tracking-wide flex items-center gap-1.5"><span>❤️ 3 Leben inklusive!</span></div>
+            <button id="start-btn" class="w-full max-w-xs py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-orbitron font-bold text-base text-slate-950 shadow-lg shadow-cyan-500/30 hover:brightness-110 active:scale-95 transition-all mb-2">SPIEL STARTEN</button>
+            
+            <div class="flex gap-2 w-full max-w-xs mb-2">
+                <button id="open-rules-btn" class="flex-1 py-1.5 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">📖 Spielregeln</button>
+                <button id="open-impressum-btn" class="flex-1 py-1.5 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">⚖️ Impressum</button>
+            </div>
+
+            <!-- Developer Branding Footer -->
+            <div class="mt-1 pt-2 border-t border-slate-800/80 w-full text-[10px] text-slate-400 leading-tight">
+                Ein Spiel von <strong class="text-cyan-400">Blankenhagen Spieleentwicklung</strong>.<br>Wir entwickeln individuelle Spiele für Ihren Verein, Ihre Stadt oder Ihr Unternehmen.
             </div>
         </div>
 
         <div id="rules-modal" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 flex flex-col justify-between hidden z-30 opacity-0 transition-opacity duration-300 text-left">
             <div><div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3"><h2 class="font-orbitron font-bold text-lg text-cyan-400">📖 Spielregeln</h2><button id="close-rules-btn" class="text-slate-400 text-xl font-bold p-1">✕</button></div>
-                <div class="space-y-2 text-xs text-slate-300 custom-scrollbar overflow-y-auto max-h-[360px] pr-1">
+                <div class="space-y-2 text-xs text-slate-300 custom-scrollbar overflow-y-auto max-h-[340px] pr-1">
                     <p><strong class="text-white">1. Ziel:</strong> Schieße den Leuchtball von unten nach oben ins Ziel.</p>
                     <p><strong class="text-white">2. Hindernisse:</strong> Passe den Moment ab, in dem die Lücken passen.</p>
                     <p><strong class="text-white">3. Leben:</strong> Max. 4 Leben. Level-Up füllt Leben auf.</p>
-                    <p><strong class="text-yellow-300">🟡 Goldball:</strong> +500 Punkte.</p>
+                    <p><strong class="text-yellow-300">🟡 Punkte-Bälle:</strong> Je höher dein Level, desto wertvoller (100 bis 1000 Punkte).</p>
                     <p><strong class="text-sky-300">⚡ Zeitlupe:</strong> Schranken bewegen sich langsamer.</p>
                     <p><strong class="text-rose-300">❤️ Extra-Leben:</strong> +1 Leben.</p>
                     <p><strong class="text-violet-300">🛡 Schutzschild:</strong> Blockt einen Treffer.</p>
                     <p><strong class="text-orange-400">💥 Laser-Ball:</strong> Sprengt/vergrößert die Lücken für den Schuss.</p>
                     <p><strong class="text-pink-400">✖️ Multiplikator:</strong> Verdoppelt die Punkte des nächsten Treffers (2x).</p>
+                    <p><strong class="text-emerald-400">🔥 Combo-Streak:</strong> Treffer in Folge erhöhen deinen Punkte-Multiplikator!</p>
                 </div>
             </div>
-            <button id="close-rules-bottom-btn" class="w-full py-2.5 mt-2 rounded-lg bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider">Alles klar, zurück!</button>
+            <button id="close-rules-bottom-btn" class="w-full py-2 mt-2 rounded-lg bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider">Alles klar, zurück!</button>
         </div>
 
         <div id="impressum-modal" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 flex flex-col justify-between hidden z-30 opacity-0 transition-opacity duration-300 text-left">
@@ -138,8 +154,13 @@ const overlaySubtitle = document.getElementById('overlay-subtitle'), startBtn = 
 const rulesModal = document.getElementById('rules-modal'), impressumModal = document.getElementById('impressum-modal');
 const highscoreEl = document.getElementById('highscore'), scoreEl = document.getElementById('current-score');
 const levelEl = document.getElementById('level-display'), effectStatus = document.getElementById('effect-status');
+const comboDisplay = document.getElementById('combo-display');
 const specialMessage = document.getElementById('special-message');
 const powerupTimerBar = document.getElementById('powerup-timer-bar');
+const gameOverStats = document.getElementById('game-over-stats');
+const recordMsg = document.getElementById('record-msg');
+const scoreMsg = document.getElementById('score-msg');
+const statsMsg = document.getElementById('stats-msg');
 
 let gameState = 'START', score = 0, lives = 3;
 let highscore = parseInt(localStorage.getItem('gapshot_highscore') || '0', 10);
@@ -149,9 +170,10 @@ let width = 300, height = 500;
 const MAX_LIVES = 4;
 let specialBall = null, slowMotionUntil = 0, shieldActive = false, laserActive = false, multiplierActive = false;
 let specialMessageTimer = null;
+let comboStreak = 0, specialsCollectedCount = 0;
+let ballTrail = [];
 
-const specialTypes = [
-    { type: 'gold', color: '#facc15', symbol: '★' },
+const baseSpecialTypes = [
     { type: 'slow', color: '#38bdf8', symbol: '⚡' },
     { type: 'life', color: '#fb7185', symbol: '+' },
     { type: 'shield', color: '#a78bfa', symbol: 'S' },
@@ -187,7 +209,7 @@ function initLines() {
     ];
 }
 
-function resetBallPosition() { ball.x = width/2; ball.y = height-45; }
+function resetBallPosition() { ball.x = width/2; ball.y = height-45; ballTrail = []; }
 
 function updateLivesUI() {
     for (let i=1;i<=MAX_LIVES;i++) {
@@ -213,6 +235,7 @@ function updateEffectStatus() {
     if (multiplierActive) effects.push('✖️ 2X');
 
     effectStatus.textContent = effects.join(' · ');
+    comboDisplay.textContent = comboStreak > 1 ? `🔥 Streak x${comboStreak}` : '';
     
     if (maxDuration > 0) {
         powerupTimerBar.style.width = `${(currentDuration / maxDuration) * 100}%`;
@@ -233,10 +256,22 @@ function showSpecialMessage(message,color) {
 
 function spawnSpecialBall() {
     if (specialBall || width<60 || height<120) return;
-    const kind=specialTypes[Math.floor(Math.random()*specialTypes.length)];
+    const currentLevel = Math.floor(normalPoints / 3) + 1;
+    let pointValue = 100;
+    if (currentLevel >= 15) pointValue = 1000;
+    else if (currentLevel >= 10) pointValue = 500;
+    else if (currentLevel >= 6) pointValue = 300;
+    else if (currentLevel >= 3) pointValue = 200;
+
+    const pointBallOption = { type: 'points', value: pointValue, color: '#facc15', symbol: '★' };
+    let chosenKind = Math.random() < 0.5 ? pointBallOption : baseSpecialTypes[Math.floor(Math.random() * baseSpecialTypes.length)];
+
     const xMin=Math.max(18,ball.radius+4), xMax=Math.max(xMin,width-ball.radius-4);
     specialBall={
-        type:kind.type,color:kind.color,symbol:kind.symbol,
+        type:chosenKind.type,
+        value:chosenKind.value || 0,
+        color:chosenKind.color,
+        symbol:chosenKind.symbol,
         x:Math.max(xMin,Math.min(xMax,width/2+(Math.random()-0.5)*18)),
         y:Math.max(height*0.18,Math.min(height*0.72,height*(0.25+Math.random()*0.45))),
         radius:13
@@ -246,11 +281,12 @@ function spawnSpecialBall() {
 
 function collectSpecialBall() {
     if (!specialBall) return;
-    const type=specialBall.type, color=specialBall.color;
+    const type=specialBall.type, color=specialBall.color, val=specialBall.value;
     specialBall=null;
+    specialsCollectedCount++;
     
-    if (type==='gold') {
-        let pts = 500;
+    if (type==='points') {
+        let pts = val;
         if (multiplierActive) { pts *= 2; multiplierActive = false; }
         score += pts; scoreEl.innerText=score;
         showSpecialMessage(`🟡 +${pts} PUNKTE`,color); audio.playSuccess();
@@ -284,8 +320,13 @@ function triggerAction() {
 
 function startGame() {
     score=0; normalPoints=0; lives=3; specialBall=null; slowMotionUntil=0; shieldActive=false; laserActive=false; multiplierActive=false;
+    comboStreak = 0; specialsCollectedCount = 0;
     particles=[]; successParticles=[];
     scoreEl.innerText=score; levelEl.innerText=1; updateLivesUI(); updateEffectStatus();
+    
+    gameOverStats.classList.add('hidden');
+    overlaySubtitle.classList.remove('hidden');
+    
     overlay.classList.add('opacity-0','pointer-events-none');
     resetBallPosition(); initLines(); gameState='PLAYING';
 }
@@ -298,18 +339,39 @@ function handleCrash() {
         showSpecialMessage('🛡️ TREFFER ABGEBLOCKT!','#a78bfa');
         audio.playSuccess(); return;
     }
+    comboStreak = 0;
     gameState='EXPLODED'; audio.playExplosion();
     gameContainer.classList.remove('shake-screen'); void gameContainer.offsetWidth; gameContainer.classList.add('shake-screen');
     createExplosionParticles(ball.x,ball.y); lives--; updateLivesUI();
     if (lives>0) {
         setTimeout(()=>{ if(gameState==='EXPLODED'){ resetBallPosition(); gameState='PLAYING'; } },800);
     } else {
-        if (score>highscore) { highscore=score; localStorage.setItem('gapshot_highscore',highscore); highscoreEl.innerText=highscore; }
+        const isNewRecord = score > highscore;
+        if (isNewRecord) {
+            highscore = score;
+            localStorage.setItem('gapshot_highscore', highscore);
+            highscoreEl.innerText = highscore;
+        }
+
         setTimeout(()=>{
             if(gameState!=='EXPLODED') return;
-            overlayTitle.innerText='GAME OVER';
-            overlaySubtitle.innerHTML=`Du hast Level <span class="text-amber-400 font-bold">${Math.floor(score/3)+1}</span> mit <span class="text-cyan-400 font-bold">${score} Punkten</span> erreicht.`;
-            startBtn.innerText='ERNEUT VERSUCHEN'; overlay.classList.remove('opacity-0','pointer-events-none'); gameState='START';
+            overlayTitle.innerText = 'GAME OVER';
+            overlaySubtitle.classList.add('hidden');
+
+            if (isNewRecord) {
+                recordMsg.innerText = '🎉 DU HAST EINEN NEUEN REKORD!';
+            } else {
+                recordMsg.innerText = `REKORD: ${highscore} PUNKTE`;
+            }
+
+            scoreMsg.innerHTML = `Du hast <span class="text-cyan-400 font-bold">${score} Punkte</span> erreicht.`;
+            const reachedLevel = Math.floor(normalPoints/3)+1;
+            statsMsg.innerHTML = `Level: <span class="text-amber-400 font-bold">${reachedLevel}</span> · Sonderbälle: ${specialsCollectedCount} · Max Streak: x${Math.max(1, comboStreak)}`;
+
+            gameOverStats.classList.remove('hidden');
+            startBtn.innerText = 'ERNEUT VERSUCHEN';
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            gameState = 'START';
         },900);
     }
 }
@@ -318,11 +380,12 @@ function scorePoint() {
     if (gameState!=='MOVING') return;
     gameState='SUCCESS'; audio.playSuccess(); createSuccessParticles(ball.x,ball.y);
     
+    comboStreak++;
     const oldLevel=Math.floor(normalPoints/3)+1;
     normalPoints++;
     const newLevel=Math.floor(normalPoints/3)+1;
     
-    let earnedPoints = 1;
+    let earnedPoints = 1 * Math.min(comboStreak, 5);
     if (multiplierActive) { earnedPoints *= 2; multiplierActive = false; }
 
     score+=earnedPoints; scoreEl.innerText=score; levelEl.innerText=newLevel;
@@ -333,7 +396,7 @@ function scorePoint() {
         if(popup){ popup.classList.remove('opacity-0','-translate-y-2'); popup.classList.add('opacity-100','-translate-y-4');
             setTimeout(()=>{popup.classList.remove('opacity-100','-translate-y-4');popup.classList.add('opacity-0','-translate-y-2');},1000); }
     }
-    laserActive = false; // Reset laser effect after successful shot
+    laserActive = false; 
     setTimeout(()=>{
         if(gameState!=='SUCCESS') return;
         resetBallPosition(); initLines();
@@ -368,6 +431,9 @@ function update() {
     }
     if(gameState==='MOVING'){
         ball.y-=ball.speed;
+        ballTrail.push({x: ball.x, y: ball.y});
+        if(ballTrail.length > 8) ballTrail.shift();
+
         if(specialBall){
             const dx=ball.x-specialBall.x,dy=ball.y-specialBall.y;
             if(Math.hypot(dx,dy)<ball.radius+specialBall.radius) collectSpecialBall();
@@ -380,6 +446,8 @@ function update() {
             }
         }
         if(ball.y<=35&&gameState==='MOVING') scorePoint();
+    } else {
+        ballTrail = [];
     }
     particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.alpha-=0.03;}); particles=particles.filter(p=>p.alpha>0);
     successParticles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.alpha-=0.04;}); successParticles=successParticles.filter(p=>p.alpha>0);
@@ -393,6 +461,19 @@ function draw() {
         ctx.fillRect(line.x+line.gapWidth,line.y-3,width-(line.x+line.gapWidth),6);
         ctx.shadowBlur=0;ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(line.x,line.y-1,line.gapWidth,2);
     });
+
+    if(gameState==='MOVING') {
+        ballTrail.forEach((pos, idx) => {
+            ctx.save();
+            ctx.globalAlpha = (idx / ballTrail.length) * 0.4;
+            ctx.fillStyle = ball.color;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, ball.radius * (idx / ballTrail.length), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+    }
+
     if(specialBall){
         ctx.save();ctx.shadowBlur=20;ctx.shadowColor=specialBall.color;ctx.fillStyle=specialBall.color;
         ctx.beginPath();ctx.arc(specialBall.x,specialBall.y,specialBall.radius,0,Math.PI*2);ctx.fill();
@@ -422,366 +503,6 @@ document.getElementById('open-impressum-btn').addEventListener('click',e=>{e.sto
 document.getElementById('close-impressum-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(impressumModal);});
 document.getElementById('close-impressum-bottom-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(impressumModal);});
 
-window.addEventListener('resize',resizeCanvas);
-canvas.addEventListener('pointerdown',e=>{e.preventDefault();triggerAction();});
-startBtn.addEventListener('click',e=>{e.stopPropagation();triggerAction();});
-window.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();triggerAction();}});
-window.onload=()=>{resizeCanvas();updateLivesUI();gameLoop();};
-</script>
-</body>
-</html>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Gap Shot - Neon Arcade</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .neon-text-cyan { text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.4); }
-        .neon-box { box-shadow: 0 0 25px rgba(6, 182, 212, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05); }
-        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 20% { transform: translate(-3px, 0px) rotate(-1deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 60% { transform: translate(-2px, 1px) rotate(0deg); } 80% { transform: translate(2px, 1px) rotate(1deg); } 100% { transform: translate(0px, 0px) rotate(0deg); } }
-        .shake-screen { animation: shake 0.35s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes heartPulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-        .heart-active { animation: heartPulse 1.5s infinite ease-in-out; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.4); border-radius: 3px; }
-    </style>
-</head>
-<body class="h-screen w-screen flex flex-col items-center justify-center overflow-hidden p-2 sm:p-4 text-white">
-<div id="game-container" class="relative w-full max-w-md h-full max-h-[780px] flex flex-col items-center justify-between rounded-3xl border border-cyan-500/20 bg-slate-900/80 backdrop-blur-md p-3 sm:p-4 neon-box overflow-hidden">
-    <div class="w-full flex justify-between items-center z-10 px-2 py-1 border-b border-slate-800">
-        <div><div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Highscore</div><div id="highscore" class="text-lg sm:text-xl font-orbitron font-bold text-cyan-400">0</div></div>
-        <div class="text-center flex flex-col items-center">
-            <div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold mb-0.5">Leben</div>
-            <div id="lives-container" class="flex gap-1 relative">
-                <span id="heart-1" class="text-rose-500 text-lg transition-transform duration-300 heart-active">❤️</span>
-                <span id="heart-2" class="text-rose-500 text-lg transition-transform duration-300 heart-active">❤️</span>
-                <span id="heart-3" class="text-rose-500 text-lg transition-transform duration-300 heart-active">❤️</span>
-                <span id="heart-4" class="text-rose-500 text-lg transition-transform duration-300">🖤</span>
-                <span id="extra-life-popup" class="absolute -top-4 left-1/2 -translate-x-1/2 text-xs font-bold text-emerald-400 opacity-0 transition-all duration-500 pointer-events-none">+1 ❤️</span>
-            </div>
-            <div id="effect-status" class="text-[9px] text-violet-300 h-3 mt-1"></div>
-        </div>
-        <div class="text-center"><div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Level</div><div id="level-display" class="text-lg sm:text-xl font-orbitron font-bold text-amber-400">1</div></div>
-        <div class="text-right"><div class="text-[10px] sm:text-xs uppercase tracking-widest text-slate-400 font-semibold">Score</div><div id="current-score" class="text-xl sm:text-2xl font-orbitron font-black text-white neon-text-cyan">0</div></div>
-    </div>
-
-    <div class="relative w-full flex-1 flex items-center justify-center my-2 overflow-hidden rounded-2xl bg-slate-950/90 border border-slate-800/80">
-        <canvas id="gameCanvas" class="w-full h-full block"></canvas>
-        <div id="special-message" class="absolute top-[18%] left-1/2 -translate-x-1/2 z-10 text-sm font-bold text-center pointer-events-none opacity-0 transition-opacity duration-200 whitespace-nowrap"></div>
-        <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-sm p-6 text-center transition-all duration-300 z-20">
-            <h1 id="overlay-title" class="text-4xl font-orbitron font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-indigo-400 mb-2 neon-text-cyan">GAP SHOT</h1>
-            <p id="overlay-subtitle" class="text-slate-300 text-sm max-w-xs mb-4 leading-relaxed">Tippe, um den Ball nach oben zu schießen. Treffe die Lücken beider Schranken!</p>
-            <div class="mb-5 px-3 py-1 bg-cyan-950/60 border border-cyan-500/30 rounded-full text-xs font-semibold text-cyan-300 tracking-wide flex items-center gap-1.5"><span>❤️ 3 Leben inklusive!</span></div>
-            <button id="start-btn" class="w-full max-w-xs py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 font-orbitron font-bold text-lg text-slate-950 shadow-lg shadow-cyan-500/30 hover:brightness-110 active:scale-95 transition-all mb-3">SPIEL STARTEN</button>
-            <div class="flex gap-2 w-full max-w-xs mt-1">
-                <button id="open-rules-btn" class="flex-1 py-2 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">📖 Spielregeln</button>
-                <button id="open-impressum-btn" class="flex-1 py-2 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-medium text-slate-300 border border-slate-700 transition-all">⚖️ Impressum</button>
-            </div>
-        </div>
-
-        <div id="rules-modal" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 flex flex-col justify-between hidden z-30 opacity-0 transition-opacity duration-300 text-left">
-            <div><div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3"><h2 class="font-orbitron font-bold text-lg text-cyan-400">📖 Spielregeln</h2><button id="close-rules-btn" class="text-slate-400 text-xl font-bold p-1">✕</button></div>
-                <div class="space-y-3 text-xs text-slate-300 custom-scrollbar overflow-y-auto max-h-[380px] pr-1">
-                    <p><strong class="text-white">1. Ziel:</strong> Schieße den Leuchtball von unten nach oben ins Ziel.</p>
-                    <p><strong class="text-white">2. Hindernisse:</strong> Passe den Moment ab, in dem die Lücken der beiden beweglichen Schranken passen.</p>
-                    <p><strong class="text-white">3. Leben:</strong> Ein Treffer kostet ein Leben. Beim Erreichen eines neuen Levels kannst du ein Leben zurückbekommen. Maximal 4 Leben.</p>
-                    <p><strong class="text-white">4. Level:</strong> Alle 3 normalen Treffer steigen das Level; die Lücken werden schmaler und die Schranken schneller.</p>
-                    <p><strong class="text-white">5. Steuerung:</strong> Tippe auf das Spielfeld oder drücke die Leertaste, um zu schießen.</p>
-                    <p><strong class="text-yellow-300">🟡 Goldball:</strong> +500 Punkte.</p>
-                    <p><strong class="text-sky-300">⚡ Zeitlupe:</strong> Schranken bewegen sich 5 Sekunden langsamer.</p>
-                    <p><strong class="text-rose-300">❤️ Extra-Leben:</strong> Gibt ein zusätzliches Leben, bis maximal 4.</p>
-                    <p><strong class="text-violet-300">🛡 Schutzschild:</strong> Blockt einen Treffer.</p>
-                    <p>Spezialbälle erscheinen gelegentlich im Spielfeld. Sammle sie ein, während dein Ball nach oben fliegt.</p>
-                </div>
-            </div>
-            <button id="close-rules-bottom-btn" class="w-full py-2.5 mt-3 rounded-lg bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider">Alles klar, zurück!</button>
-        </div>
-
-        <div id="impressum-modal" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md p-5 flex flex-col justify-between hidden z-30 opacity-0 transition-opacity duration-300 text-left">
-            <div><div class="flex justify-between items-center border-b border-slate-800 pb-3 mb-3"><h2 class="font-orbitron font-bold text-lg text-cyan-400">⚖️ Impressum</h2><button id="close-impressum-btn" class="text-slate-400 text-xl font-bold p-1">✕</button></div>
-                <div class="space-y-3 text-xs text-slate-300 custom-scrollbar overflow-y-auto max-h-[380px] pr-1">
-                    <div><p class="font-bold text-white text-sm">Angaben gemäß § 5 DDG</p><p class="mt-1">Jörg Blankenhagen<br>Blankenhagen Spieleentwicklung<br>Kanalstraße 31<br>73614 Schorndorf<br>Deutschland</p></div>
-                    <div><p class="font-bold text-white text-sm">Kontakt</p><p class="mt-1">E-Mail: spieleentwicklung@freenet.de</p></div>
-                    <div><p class="font-bold text-white text-sm">Redaktionell verantwortlich</p><p class="mt-1">Jörg Blankenhagen<br>Kanalstraße 31<br>73614 Schorndorf</p></div>
-                    <div><p class="font-bold text-white text-sm">EU-Streitschlichtung</p><p class="mt-1 text-slate-400 text-[11px] leading-relaxed">Die Europäische Kommission stellte eine Plattform zur Online-Streitbeilegung (OS) bereit. Die Plattform wurde eingestellt. Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p></div>
-                </div>
-            </div>
-            <button id="close-impressum-bottom-btn" class="w-full py-2.5 mt-3 rounded-lg bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold uppercase tracking-wider">Schließen</button>
-        </div>
-    </div>
-    <div class="w-full text-center py-1 text-xs text-slate-500 font-medium tracking-wide">Tippe auf den Bildschirm oder drücke [Leertaste]</div>
-</div>
-
-<script>
-class SoundSystem {
-    constructor() { this.ctx = null; }
-    init() {
-        if (!this.ctx) {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            if (AudioCtx) this.ctx = new AudioCtx();
-        }
-        if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
-    }
-    tone(freqs, type = 'sine', duration = 0.25) {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
-        osc.type = type;
-        const now = this.ctx.currentTime;
-        freqs.forEach(([f, t]) => osc.frequency.setValueAtTime(f, now + t));
-        gain.gain.setValueAtTime(0.22, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + duration);
-        osc.connect(gain); gain.connect(this.ctx.destination);
-        osc.start(); osc.stop(now + duration);
-    }
-    playShoot() { this.tone([[300,0],[800,0.12]], 'sine', 0.14); }
-    playSuccess() { this.tone([[523.25,0],[659.25,0.08],[783.99,0.16]], 'triangle', 0.3); }
-    playExtraLife() { this.tone([[440,0],[880,0.1]], 'sine', 0.35); }
-    playExplosion() {
-        if (!this.ctx) return;
-        const size = Math.floor(this.ctx.sampleRate * 0.3);
-        const buffer = this.ctx.createBuffer(1, size, this.ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i=0;i<size;i++) data[i] = Math.random()*2-1;
-        const noise=this.ctx.createBufferSource(), filter=this.ctx.createBiquadFilter(), gain=this.ctx.createGain();
-        noise.buffer=buffer; filter.type='lowpass'; filter.frequency.setValueAtTime(800,this.ctx.currentTime);
-        filter.frequency.linearRampToValueAtTime(50,this.ctx.currentTime+0.3);
-        gain.gain.setValueAtTime(0.35,this.ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01,this.ctx.currentTime+0.3);
-        noise.connect(filter); filter.connect(gain); gain.connect(this.ctx.destination); noise.start(); noise.stop(this.ctx.currentTime+0.3);
-    }
-}
-const audio = new SoundSystem();
-const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
-const gameContainer = document.getElementById('game-container');
-const overlay = document.getElementById('overlay'), overlayTitle = document.getElementById('overlay-title');
-const overlaySubtitle = document.getElementById('overlay-subtitle'), startBtn = document.getElementById('start-btn');
-const rulesModal = document.getElementById('rules-modal'), impressumModal = document.getElementById('impressum-modal');
-const highscoreEl = document.getElementById('highscore'), scoreEl = document.getElementById('current-score');
-const levelEl = document.getElementById('level-display'), effectStatus = document.getElementById('effect-status');
-const specialMessage = document.getElementById('special-message');
-
-let gameState = 'START', score = 0, lives = 3;
-let highscore = parseInt(localStorage.getItem('gapshot_highscore') || '0', 10);
-highscoreEl.innerText = highscore;
-let particles = [], successParticles = [];
-let width = 300, height = 500;
-const MAX_LIVES = 4;
-let specialBall = null, slowMotionUntil = 0, shieldActive = false;
-let lastSpecialSpawnScore = 0, specialMessageTimer = null;
-const specialTypes = [
-    { type: 'gold', color: '#facc15', symbol: '★' },
-    { type: 'slow', color: '#38bdf8', symbol: '⚡' },
-    { type: 'life', color: '#fb7185', symbol: '+' },
-    { type: 'shield', color: '#a78bfa', symbol: 'S' }
-];
-
-function resizeCanvas() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = Math.max(1, rect.width); canvas.height = Math.max(1, rect.height);
-    width = canvas.width; height = canvas.height;
-    if (gameState === 'START' || gameState === 'PLAYING') { resetBallPosition(); initLines(); }
-}
-let ball = { x: 0, y: 0, radius: 10, speed: 13, color: '#06b6d4' };
-let lines = [];
-function initLines() {
-    // Sanfter Schwierigkeitsanstieg: Ziel ist, dass auch hohe Level spielbar bleiben.
-    // Das Level steigt alle 3 normale Treffer; Bonuspunkte beeinflussen die Schwierigkeit nicht.
-    const level = Math.floor(normalPoints / 3) + 1;
-    const levelStep = Math.min(level - 1, 29);
-    // Die Lücken schrumpfen über 30 Level nur um insgesamt ca. 23 bzw. 20 Pixel.
-    const gap1 = Math.max(100, 125 - levelStep * 0.8);
-    const gap2 = Math.max(85, 105 - levelStep * 0.7);
-    // Die Hindernisse werden nur langsam schneller und bleiben auf Level 30 moderat.
-    const speed1 = 1.4 + levelStep * 0.035;
-    const speed2 = 1.8 + levelStep * 0.04;
-    lines = [
-        { y: height*0.58, gapWidth: Math.min(gap1,width), x: Math.random()*Math.max(0,width-gap1), speed:speed1, dir:Math.random()<0.5?1:-1, color:'#f43f5e' },
-        { y: height*0.32, gapWidth: Math.min(gap2,width), x: Math.random()*Math.max(0,width-gap2), speed:speed2, dir:Math.random()<0.5?1:-1, color:'#a855f7' }
-    ];
-}
-function resetBallPosition() { ball.x = width/2; ball.y = height-45; }
-function updateLivesUI() {
-    for (let i=1;i<=MAX_LIVES;i++) {
-        const heart=document.getElementById(`heart-${i}`); if (!heart) continue;
-        if (i<=lives) { heart.innerText='❤️'; heart.classList.add('heart-active'); heart.style.opacity='1'; }
-        else { heart.innerText='🖤'; heart.classList.remove('heart-active'); heart.style.opacity='0.4'; }
-    }
-}
-function updateEffectStatus() {
-    const effects=[];
-    if (Date.now()<slowMotionUntil) effects.push(`⚡ ${Math.ceil((slowMotionUntil-Date.now())/1000)}s`);
-    if (shieldActive) effects.push('🛡 AKTIV');
-    effectStatus.textContent=effects.join(' · ');
-}
-function showSpecialMessage(message,color) {
-    specialMessage.textContent=message; specialMessage.style.color=color;
-    specialMessage.style.textShadow=`0 0 12px ${color}`;
-    specialMessage.style.opacity='1';
-    if (specialMessageTimer) clearTimeout(specialMessageTimer);
-    specialMessageTimer=setTimeout(()=>{specialMessage.style.opacity='0';},1300);
-}
-function spawnSpecialBall() {
-    if (specialBall || width<60 || height<120) return;
-    const kind=specialTypes[Math.floor(Math.random()*specialTypes.length)];
-    // Spawn near the central flight path, but away from the starting ball.
-    const xMin=Math.max(18,ball.radius+4), xMax=Math.max(xMin,width-ball.radius-4);
-    specialBall={
-        type:kind.type,color:kind.color,symbol:kind.symbol,
-        x:Math.max(xMin,Math.min(xMax,width/2+(Math.random()-0.5)*18)),
-        y:Math.max(height*0.18,Math.min(height*0.72,height*(0.25+Math.random()*0.45))),
-        radius:13
-    };
-}
-function collectSpecialBall() {
-    if (!specialBall) return;
-    const type=specialBall.type, color=specialBall.color;
-    specialBall=null;
-    if (type==='gold') {
-        score+=500; scoreEl.innerText=score;
-        showSpecialMessage('🟡 +500 PUNKTE',color); audio.playSuccess();
-    } else if (type==='slow') {
-        slowMotionUntil=Date.now()+9000;
-        showSpecialMessage('⚡ ZEITLUPE · 5 SEKUNDEN',color); audio.playSuccess();
-    } else if (type==='life') {
-        if (lives<MAX_LIVES) { lives++; updateLivesUI(); audio.playExtraLife(); showSpecialMessage('❤️ EXTRA-LEBEN',color); }
-        else { showSpecialMessage('❤️ BEREITS 4 LEBEN',color); }
-    } else if (type==='shield') {
-        shieldActive=true; showSpecialMessage('🛡 SCHUTZSCHILD AKTIV',color); audio.playSuccess();
-    }
-    updateEffectStatus();
-}
-function triggerAction() {
-    if (!rulesModal.classList.contains('hidden') || !impressumModal.classList.contains('hidden')) return;
-    audio.init();
-    if (gameState==='START') startGame();
-    else if (gameState==='PLAYING') { gameState='MOVING'; audio.playShoot(); }
-}
-function startGame() {
-    score=0; normalPoints=0; lives=3; specialBall=null; slowMotionUntil=0; shieldActive=false; lastSpecialSpawnScore=0;
-    particles=[]; successParticles=[];
-    scoreEl.innerText=score; levelEl.innerText=1; updateLivesUI(); updateEffectStatus();
-    overlay.classList.add('opacity-0','pointer-events-none');
-    resetBallPosition(); initLines(); gameState='PLAYING';
-}
-function handleCrash() {
-    if (gameState!=='MOVING') return;
-    if (shieldActive) {
-        shieldActive=false; specialBall=null;
-        gameState='PLAYING'; resetBallPosition(); updateEffectStatus();
-        showSpecialMessage('🛡 TREFFER ABGEBLOCKT!','#a78bfa');
-        audio.playSuccess(); return;
-    }
-    gameState='EXPLODED'; audio.playExplosion();
-    gameContainer.classList.remove('shake-screen'); void gameContainer.offsetWidth; gameContainer.classList.add('shake-screen');
-    createExplosionParticles(ball.x,ball.y); lives--; updateLivesUI();
-    if (lives>0) {
-        setTimeout(()=>{ if(gameState==='EXPLODED'){ resetBallPosition(); gameState='PLAYING'; } },800);
-    } else {
-        if (score>highscore) { highscore=score; localStorage.setItem('gapshot_highscore',highscore); highscoreEl.innerText=highscore; }
-        setTimeout(()=>{
-            if(gameState!=='EXPLODED') return;
-            overlayTitle.innerText='GAME OVER';
-            overlaySubtitle.innerHTML=`Du hast Level <span class="text-amber-400 font-bold">${Math.floor(score/3)+1}</span> mit <span class="text-cyan-400 font-bold">${score} Punkten</span> erreicht.`;
-            startBtn.innerText='ERNEUT VERSUCHEN'; overlay.classList.remove('opacity-0','pointer-events-none'); gameState='START';
-        },900);
-    }
-}
-function scorePoint() {
-    if (gameState!=='MOVING') return;
-    gameState='SUCCESS'; audio.playSuccess(); createSuccessParticles(ball.x,ball.y);
-    // Level-Fortschritt basiert nur auf normalen Treffern, nicht auf Bonuspunkten.
-    const oldLevel=Math.floor(normalPoints/3)+1;
-    normalPoints++;
-    const newLevel=Math.floor(normalPoints/3)+1;
-    score+=1; scoreEl.innerText=score; levelEl.innerText=newLevel;
-    if (newLevel>oldLevel && lives<MAX_LIVES) {
-        lives++; updateLivesUI(); audio.playExtraLife();
-        const popup=document.getElementById('extra-life-popup');
-        if(popup){ popup.classList.remove('opacity-0','-translate-y-2'); popup.classList.add('opacity-100','-translate-y-4');
-            setTimeout(()=>{popup.classList.remove('opacity-100','-translate-y-4');popup.classList.add('opacity-0','-translate-y-2');},1000); }
-    }
-    setTimeout(()=>{
-        if(gameState!=='SUCCESS') return;
-        resetBallPosition(); initLines();
-        // A new special may appear every 1-2 successful shots, with at most one on screen.
-        if(!specialBall && Math.random()<0.65) spawnSpecialBall();
-        gameState='PLAYING';
-    },400);
-}
-let normalPoints=0;
-function createExplosionParticles(x,y) {
-    particles=[];
-    for(let i=0;i<35;i++){const a=Math.random()*Math.PI*2,s=Math.random()*6+2;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,radius:Math.random()*4+2,color:Math.random()<0.5?'#f43f5e':'#fb923c',alpha:1});}
-}
-function createSuccessParticles(x,y) {
-    successParticles=[];
-    for(let i=0;i<25;i++){const a=Math.random()*Math.PI*2,s=Math.random()*4+1;successParticles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-1,radius:Math.random()*3+2,color:'#22c55e',alpha:1});}
-}
-function update() {
-    const now=Date.now();
-    if(now>=slowMotionUntil) slowMotionUntil=0;
-    updateEffectStatus();
-    if(gameState==='PLAYING'||gameState==='MOVING'){
-        lines.forEach(line=>{
-            const factor=now<slowMotionUntil?0.35:1;
-            line.x+=line.speed*line.dir*factor;
-            if(line.x<=0){line.x=0;line.dir=1;}
-            else if(line.x+line.gapWidth>=width){line.x=width-line.gapWidth;line.dir=-1;}
-        });
-    }
-    if(gameState==='MOVING'){
-        ball.y-=ball.speed;
-        if(specialBall){
-            const dx=ball.x-specialBall.x,dy=ball.y-specialBall.y;
-            if(Math.hypot(dx,dy)<ball.radius+specialBall.radius) collectSpecialBall();
-        }
-        for(const line of lines){
-            if(gameState!=='MOVING') break;
-            if(Math.abs(ball.y-line.y)<=ball.radius+3){
-                const gapStart=line.x,gapEnd=line.x+line.gapWidth;
-                if(ball.x-ball.radius<gapStart||ball.x+ball.radius>gapEnd) handleCrash();
-            }
-        }
-        if(ball.y<=35&&gameState==='MOVING') scorePoint();
-    }
-    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.alpha-=0.03;}); particles=particles.filter(p=>p.alpha>0);
-    successParticles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.alpha-=0.04;}); successParticles=successParticles.filter(p=>p.alpha>0);
-}
-function draw() {
-    ctx.clearRect(0,0,width,height);
-    lines.forEach(line=>{
-        ctx.shadowBlur=12;ctx.shadowColor=line.color;ctx.fillStyle=line.color;
-        ctx.fillRect(0,line.y-3,line.x,6);
-        ctx.fillRect(line.x+line.gapWidth,line.y-3,width-(line.x+line.gapWidth),6);
-        ctx.shadowBlur=0;ctx.fillStyle='rgba(255,255,255,0.08)';ctx.fillRect(line.x,line.y-1,line.gapWidth,2);
-    });
-    if(specialBall){
-        ctx.save();ctx.shadowBlur=20;ctx.shadowColor=specialBall.color;ctx.fillStyle=specialBall.color;
-        ctx.beginPath();ctx.arc(specialBall.x,specialBall.y,specialBall.radius,0,Math.PI*2);ctx.fill();
-        ctx.shadowBlur=0;ctx.fillStyle='#0b0f19';ctx.font='bold 15px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-        ctx.fillText(specialBall.symbol,specialBall.x,specialBall.y);ctx.restore();
-    }
-    if(gameState!=='EXPLODED'){
-        ctx.save();ctx.shadowBlur=15;ctx.shadowColor=ball.color;ctx.fillStyle=gameState==='SUCCESS'?'#22c55e':ball.color;
-        ctx.beginPath();ctx.arc(ball.x,ball.y,ball.radius,0,Math.PI*2);ctx.fill();ctx.restore();
-    }
-    if(shieldActive&&gameState!=='EXPLODED'){
-        ctx.save();ctx.beginPath();ctx.arc(ball.x,ball.y,ball.radius+7,0,Math.PI*2);
-        ctx.strokeStyle='#a78bfa';ctx.lineWidth=3;ctx.shadowBlur=15;ctx.shadowColor='#a78bfa';ctx.stroke();ctx.restore();
-    }
-    particles.forEach(p=>{ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fill();ctx.restore();});
-    successParticles.forEach(p=>{ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);ctx.fill();ctx.restore();});
-}
-function gameLoop(){update();draw();requestAnimationFrame(gameLoop);}
-function openModal(modal){modal.classList.remove('hidden');setTimeout(()=>modal.classList.remove('opacity-0'),10);}
-function closeModal(modal){modal.classList.add('opacity-0');setTimeout(()=>modal.classList.add('hidden'),300);}
-document.getElementById('open-rules-btn').addEventListener('click',e=>{e.stopPropagation();openModal(rulesModal);});
-document.getElementById('close-rules-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(rulesModal);});
-document.getElementById('close-rules-bottom-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(rulesModal);});
-document.getElementById('open-impressum-btn').addEventListener('click',e=>{e.stopPropagation();openModal(impressumModal);});
-document.getElementById('close-impressum-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(impressumModal);});
-document.getElementById('close-impressum-bottom-btn').addEventListener('click',e=>{e.stopPropagation();closeModal(impressumModal);});
 window.addEventListener('resize',resizeCanvas);
 canvas.addEventListener('pointerdown',e=>{e.preventDefault();triggerAction();});
 startBtn.addEventListener('click',e=>{e.stopPropagation();triggerAction();});
