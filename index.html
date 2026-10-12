@@ -213,7 +213,7 @@ function collectSpecialBall() {
         score+=500; scoreEl.innerText=score;
         showSpecialMessage('🟡 +500 PUNKTE',color); audio.playSuccess();
     } else if (type==='slow') {
-        slowMotionUntil=Date.now()+5000;
+        slowMotionUntil=Date.now()+9000;
         showSpecialMessage('⚡ ZEITLUPE · 5 SEKUNDEN',color); audio.playSuccess();
     } else if (type==='life') {
         if (lives<MAX_LIVES) { lives++; updateLivesUI(); audio.playExtraLife(); showSpecialMessage('❤️ EXTRA-LEBEN',color); }
